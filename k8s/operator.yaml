@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: oraclecmp-operator
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: oraclecmp-operator
+  namespace: oraclecmp-operator
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oraclecmp-operator
+  namespace: oraclecmp-operator
+spec:
+  selector:
+    matchLabels:
+      app: oraclecmp-operator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: oraclecmp-operator
+    spec:
+      serviceAccountName: oraclecmp-operator
+      containers:
+      - name: operator
+        image: docker.io/ilfur/oraclecmp-operator
+        imagePullPolicy: Always
+        env:
+        - name: HOSTFROM
+          value: "emserv021.ws.wdgnet1.oraclevcn.com"
+        - name: HOSTTO
+          value: "130.61.182.141"
+        - name: RESTURL
+          valueFrom:
+            secretKeyRef:
+              name: ssausersecret
+              key: em_rest_url
+        - name: SSAUSR
+          valueFrom:
+            secretKeyRef:
+              name: ssausersecret
+              key: ssa_user
+        - name: SSAPWD
+          valueFrom:
+            secretKeyRef:
+              name: ssausersecret
+              key: ssa_pwd
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: oraclecmp-operator-admin
+subjects:
+- kind: ServiceAccount
+  name: oraclecmp-operator
+  namespace: oraclecmp-operator
+roleRef:
+  kind: ClusterRole
+  name: oraclecmp-operator
+  apiGroup: ""
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: oraclecmp-operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - deployments
+  - services
+  - configmaps
+  - secrets
+  - pods
+  verbs:
+  - '*'
+- apiGroups:
+  - "apps"
+  resources:
+  - deployments
+  - services
+  - configmaps
+  verbs:
+  - '*'
+- apiGroups:
+  - "apiextensions.k8s.io"
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - '*'
+- apiGroups:
+  - "sample.database.oracle"
+  resources:
+  - oraclecmps
+  - oraclecmps/status
+  verbs:
+  - '*'

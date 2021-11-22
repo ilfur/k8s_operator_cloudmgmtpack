@@ -1,0 +1,14 @@
+apiVersion: "sample.database.oracle/v1"
+kind: OracleCMP
+metadata:
+  name: k8spdb
+  namespace: oraclecmp-operator
+spec:
+  pdbaas_zone: "K8Szone"
+  pdbaas_template: "K8Stemplate"
+  pdbaas_workload: "DefaultWorkload"
+  pdbaas_service: "k8spdb"
+  pdbaas_tbs: "pdb_tbs1"
+  department: "Development"
+  comment: "Operator on k8s Testing"
+
