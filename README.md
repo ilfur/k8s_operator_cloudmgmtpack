@@ -18,6 +18,17 @@ of your choice. The JAR file is built using your local Maven and JDK and then co
 
 ### Deployment
 
-1. Deploy the CRD: `kubectl apply -f k8s/crd.yaml`
-2. Deploy the secret used for accessing the Cloud Management Pack and for default admin user/password of new databases: 'kubectl apply -f ssausersecret.yaml"
-3. Deploy the operator: `kubectl apply -f k8s/operator.yaml`
+1. Create a nice namespace to keep all deployments, secrets and later perhaps the custom resources:
+   kubectl create namespace oracmp-operator
+2. Deploy the CRD: `
+   kubectl apply -f k8s/crd.yaml`
+3. Edit and Deploy the secret used for accessing the Cloud Management Pack and for default admin user/password of new databases: 
+   The secret must have the same namepace as the operator in the next step
+   The secret contains the OEM base url, like https://192.168.12.12:7803 without any URIs, the are added by the operator on demand.
+   The secret contains OEM user name and password. This muser must have rights to access the templates and workloads in the Cloud Maagemtn Pack, like sysman/welcome1
+   'kubectl apply -f ssausersecret.yaml"
+4. Deploy the operator: `kubectl apply -f k8s/operator.yaml`
+   The operator YAML must reference the same namespace as the beforementioned secret, at best the same namespace as with 1)
+   The referenced Docker image is a public one on docker.io, You could reference your own after building by Yourself.
+   Be aware that You would need a docker registry secret for a custom/private container registry and an additional parameter "imagePullSecret" in the operator YAML.
+
