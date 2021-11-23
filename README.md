@@ -23,7 +23,7 @@ of your choice. The JAR file is built using your local Maven and JDK and then co
 2. Deploy the CRD: `
    kubectl apply -f k8s/crd.yaml`
 3. Edit and Deploy the secret used for accessing the Cloud Management Pack and for default admin user/password of new databases: 
-   The secret must have the same namepace as the operator in the next step
+   The secret must have the same namespace as the operator in the next step
    The secret contains the OEM base url, like https://192.168.12.12:7803 without any URIs, the are added by the operator on demand.
    The secret contains OEM user name and password. This muser must have rights to access the templates and workloads in the Cloud Maagemtn Pack, like sysman/welcome1
    'kubectl apply -f ssausersecret.yaml"
@@ -31,4 +31,15 @@ of your choice. The JAR file is built using your local Maven and JDK and then co
    The operator YAML must reference the same namespace as the beforementioned secret, at best the same namespace as with 1)
    The referenced Docker image is a public one on docker.io, You could reference your own after building by Yourself.
    Be aware that You would need a docker registry secret for a custom/private container registry and an additional parameter "imagePullSecret" in the operator YAML.
-
+5. Create Your own Oracle PDB's easily through simple YAMLs (a custom resource of the kind "OracleCMP") with just a few parameters.
+   Look at the sample "mycmp.yaml", You only need to specify a zone and template name, a workload name and the name of the database. 
+   You could also add a comment and department name. The operator will find out the URIs and numbers behind those names 
+   and make the Cloud Management Pack create a database accordingly.
+   The operator will also create a secret with admin username and password inside as well as a configMap with database name and the connect string 
+   obtained from Cloud Management Pack. 
+   Please wait a while (about 2 minutes) until the PDB is created. Then the ConfigMap will show the connect URL. 
+   You could wait until the status of the custom resource has changed from "INITIALIZING" to "READY" for that. 
+   If anything fails, the status of the new resource will show the error message coming from the cloud management pack, 
+   like invalid template name, database name already in use and such. 
+   When deleting the custom resource, the database will also get deleted by using the URI stored in the custom resource's status.
+   .
