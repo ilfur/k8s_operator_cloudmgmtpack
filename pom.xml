@@ -75,7 +75,7 @@
                         <entrypoint>
                             <arg>/bin/sh</arg>
                             <arg>-c</arg>
-                            <arg>java -Dhost.replace=${HOSTFROM} -Dhost.replaceTo=${HOSTTO} -Dem.rest.url=${RESTURL} -Dssa.usr=${SSAUSR} -Dssa.pwd=${SSAPWD} -cp /app/resources:/app/classes:/app/libs/* io.javaoperatorsdk.operator.sample.OracleCMPOperator</arg>                            
+                            <arg>java -Dssa.ns=${SSANS} -Dhost.replace=${HOSTFROM} -Dhost.replaceTo=${HOSTTO} -Dem.rest.url=${RESTURL} -Dssa.usr=${SSAUSR} -Dssa.pwd=${SSAPWD} -cp /app/resources:/app/classes:/app/libs/* io.javaoperatorsdk.operator.sample.OracleCMPOperator</arg>                            
                         </entrypoint>
                     </container>
                     <from>

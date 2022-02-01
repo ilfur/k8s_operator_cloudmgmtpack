@@ -58,6 +58,7 @@ public class OracleCMPController implements ResourceController<OracleCMP> {
             OracleCMP oraServer, Context<OracleCMP> context) {
 
         String ns = oraServer.getMetadata().getNamespace();
+        String operatorNS = System.getProperty("ssa.ns");
 
         Map<String, String> data = new HashMap<>();
         Map<String, String> leanData = new HashMap<>();
@@ -78,7 +79,7 @@ public class OracleCMPController implements ResourceController<OracleCMP> {
         Secret pdbDefaultsSecret
                 = kubernetesClient
                         .secrets()
-                        .inNamespace(ns)
+                        .inNamespace(operatorNS)
                         .withName("ssausersecret")
                         .get();
 

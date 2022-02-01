@@ -1,0 +1,13 @@
+apiVersion: "sample.database.oracle/v1"
+kind: OracleCMP
+metadata:
+  name: mypdb
+  namespace: oraclecmp-operator
+spec:
+  comment: Operator on k8s Testing
+  department: Development
+  pdbaas_service: mypdb
+  pdbaas_tbs: pdb_tbs1
+  pdbaas_template: PDB_Standard
+  pdbaas_workload: Small
+  pdbaas_zone: RZLP
